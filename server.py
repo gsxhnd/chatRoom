@@ -1,43 +1,73 @@
-#!/usr/bin/evn python
-#coding:utf-8
-  
+# -*- coding: utf-8 -*-
 import socket
+import sys
 import threading
-  
-host = '192.168.3.102'
-port = 8888
-username = ''
-clients = []
  
-def server(sock, addr):
-    while 1:
-        try:
-            print ('waitting data...')
-            data = sock.recv(1024)
-            if not data:
-                break
-            for c in clients:
-                c.send(data)
-            print (data)
-        except:
-            break
-    clients.remove(sock)
-    sock.close()
-    print ('[%s:%s] leave' % (addr[0], addr[1]))
-    print (clients)
+con = threading.Condition()
+HOST = input("input the server's ip adrress: ") # Symbolic name meaning all available interfaces
+port = input("input the server's port : ") # Arbitrary non-privileged port
+PORT = int(port)
+data = ''
  
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print ('Socket create')
-s.bind((host, port))
-s.listen(3)
-print ('Socket is listenning...')
+print ('Socket created')
+s.bind((HOST, PORT))
+s.listen(10)
+print ('Socket now listening')
+ 
+#Function for handling connections. This will be used to create threads
+def clientThreadIn(conn, nick):
+    global data
+#infinite loop so that function do not terminate and thread do not end.
+    while True:
+    #Receiving from client
+        try:
+            temp = conn.recv(1024).decode()
+            if not temp:
+                conn.close()
+                return
+            NotifyAll(temp)
+            print (data)
+        except:
+            NotifyAll(nick + " leaves the room!")
+            print (data.encode())
+            return
+ 
+    #came out of loop
+ 
+def NotifyAll(sss):
+    global data
+    if con.acquire():
+        data = sss
+        con.notifyAll()
+        con.release()
+  
+def ClientThreadOut(conn, nick):
+    global data
+    while True:
+        if con.acquire():
+            con.wait()
+            if data:
+                try:
+                    conn.send(data.encode())
+                    con.release()
+                except:
+                    con.release()
+                    return
+                     
  
 while 1:
-    client, addr = s.accept()
-    username = client.recv(1024)
-    clients.append(client)
-    print ('[%s:%s:%s] join!' % (addr[0], addr[1], username))
-    print (clients)
+    #wait to accept a connection - blocking call
+    conn, addr = s.accept()
+    print ('Connected with ' + addr[0] + ':' + str(addr[1]))
+    nick = conn.recv(1024).decode()
+    #send only takes string
+    #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+    NotifyAll('Welcome ' +  nick + ' to the room!')
+    print (data)
+    print (str((threading.activeCount() + 1) / 2) + ' person(s)!')
+    conn.send(data.encode())
+    threading.Thread(target = clientThreadIn , args = (conn, nick)).start()
+    threading.Thread(target = ClientThreadOut , args = (conn, nick)).start()
  
-    thread = threading.Thread(target = server, args = (client, addr))
-    thread.start()
+s.close()
