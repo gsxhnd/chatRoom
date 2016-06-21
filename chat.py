@@ -39,6 +39,7 @@ class loginDialog(QWidget):
 
         connectButton = QPushButton('连接')
         connectButton.clicked.connect(self.configOut)
+    
         quitButton = QPushButton('退出')
         quitButton.clicked.connect(qApp.quit)
         
@@ -83,7 +84,6 @@ class loginDialog(QWidget):
         self.getPORT = self.PortEdit.text()
         self.getNICK = self.NickEdit.text()
 
-        configContent = {'IP':self.getIP,'PORT':self.getPORT,'NICKNAME':self.getNICK}
 
         if self.getIP == '':
             ipErrorMessage = QMessageBox.information(self,'error','请输入正确的IP地址')
@@ -92,19 +92,28 @@ class loginDialog(QWidget):
         elif self.getNICK == '':
             nickErrorMessage = QMessageBox.information(self,'error','请输入昵称')
         else:
+            
+            configContent = {'IP':self.getIP,'PORT':self.getPORT,'NICKNAME':self.getNICK}
+
             configData = str(configContent)
             output = open('config.ini','w+')
             output.write(configData)
             output.close()
+
             self.close()
+
             showchatroom = showChatRoom()
             showchatroom.show()
             showchatroom.exec_()
+        
             
             
 
 
 class showConfig():
+    # global getDataIP
+    # global getDataPORT
+    # global getDataNICK
     filename = 'config.ini'
     if os.path.exists(filename):
         getInfo = open('config.ini','rb')
@@ -117,13 +126,17 @@ class showConfig():
         getDataPORT = getConfigData['PORT']
         getDataNICK = getConfigData['NICKNAME']
 
+
 class showChatRoom(QDialog):
     def __init__(self):
         super().__init__()
         self.chatRoom()
-        host = showConfig.getDataIP
-        port = int(showConfig.getDataPORT)
-        self.nickname = showConfig.getDataNICK
+        
+        getInfo = open('config.ini','rb').readline()
+        getData = eval(getInfo)
+        host = getData['IP']
+        port = int(getData['PORT'])
+        self.nickname = getData['NICKNAME']
         inString = ''
         outString = ''
         self.SockData = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
