@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 import socket
-import sys
 import threading
+import rsa
  
 con = threading.Condition()
-HOST = input("input the server's ip adrress: ") # Symbolic name meaning all available interfaces
-port = input("input the server's port : ") # Arbitrary non-privileged port
+HOST = input("input the server's ip adrress: ")  # Symbolic name meaning all available interfaces
+port = input("input the server's port : ")  # Arbitrary non-privileged port
 PORT = int(port)
 data = ''
  
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print ('Socket created')
+print('Socket created')
 s.bind((HOST, PORT))
 s.listen(10)
-print ('Socket now listening')
- 
+print('Socket now listening')
+
 #Function for handling connections. This will be used to create threads
+
+
 def clientThreadIn(conn, nick):
     global data
 #infinite loop so that function do not terminate and thread do not end.
@@ -27,21 +29,21 @@ def clientThreadIn(conn, nick):
                 conn.close()
                 return
             NotifyAll(temp)
-            print (data)
+            print(data)
         except:
             NotifyAll(nick + " leaves the room!")
-            print (data.encode())
+            print(data.encode())
             return
- 
-    #came out of loop
- 
+
+
 def NotifyAll(sss):
     global data
     if con.acquire():
         data = sss
         con.notifyAll()
         con.release()
-  
+
+
 def ClientThreadOut(conn, nick):
     global data
     while True:
@@ -63,9 +65,9 @@ while 1:
     nick = conn.recv(1024).decode()
     #send only takes string
     #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    NotifyAll('Welcome ' +  nick + ' to the room!')
-    print (data)
-    print (str((threading.activeCount() + 1) / 2) + ' person(s)!')
+    NotifyAll('Welcome ' + nick + ' to the room!')
+    print(data)
+    print(str((threading.activeCount() + 1) / 2) + ' person(s)!')
     conn.send(data.encode())
     threading.Thread(target = clientThreadIn , args = (conn, nick)).start()
     threading.Thread(target = ClientThreadOut , args = (conn, nick)).start()

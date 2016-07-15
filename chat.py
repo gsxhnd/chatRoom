@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import rsa
 import sys
 import os
 import socket
@@ -19,10 +20,11 @@ class loginDialog(QWidget):
     def showDialog(self):
 
         getdata = showConfig()
-        if os.path.exists(showConfig.filename):
-            ip = getdata.getDataIP
-            port = getdata.getDataPORT
-            nick = getdata.getDataNICK
+        if os.path.exists('config.ini'):
+            showconfig = showConfig.get_config('config.ini')
+            ip = showconfig[0]
+            port = showconfig[1]
+            nick = showconfig[2]
         else:
             ip = '输入IP地址'
             port = '输入端口'
@@ -96,36 +98,30 @@ class loginDialog(QWidget):
 
             self.close()
 
-            showchatroom = showChatRoom()
+            showchatroom = ChatRoom()
             showchatroom.show()
             showchatroom.exec_()
 
 
 class showConfig():
-    # global getDataIP
-    # global getDataPORT
-    # global getDataNICK
-    filename = 'config.ini'
-    if os.path.exists(filename):
-        getInfo = open('config.ini', 'rb')
-        getInfoData = getInfo.readline()
-        getInfo.close()
-        getConfigData = eval(getInfoData)
-        getDataIP = getConfigData['IP']
-        getDataPORT = getConfigData['PORT']
-        getDataNICK = getConfigData['NICKNAME']
+    def get_config(filename):
+        if os.path.exists(filename):
+            readInfo = open('config.ini', 'rb')
+            readInfoData = readInfo.readline()
+            readInfo.close()
+            getConfigData = eval(readInfoData)
+            return (getConfigData['IP'],getConfigData['PORT'],getConfigData['NICKNAME'])
 
 
-class showChatRoom(QDialog):
+
+class ChatRoom(QDialog):
     def __init__(self):
         super().__init__()
-        self.chatRoom()
-        
-        getInfo = open('config.ini', 'rb').readline()
-        getData = eval(getInfo)
-        host = getData['IP']
-        port = int(getData['PORT'])
-        self.nickname = getData['NICKNAME']
+        self.showchatRoom()
+        showconfig = showConfig.get_config('config.ini')
+        host = showconfig[0]
+        port = int(showconfig[1])
+        self.nickname = showconfig[2]
         inString = ''
         outString = ''
         self.SockData = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -161,7 +157,7 @@ class showChatRoom(QDialog):
                 self.message.append(data)
             except:
                 break
-
+    
     def exit(self):
         self.SockData.close()
         sys.exit()
@@ -171,17 +167,32 @@ class showChatRoom(QDialog):
             self.chatText.append(m)
         self.message = []
 
-    def chatRoom(self):
+    def showchatRoom(self):
         self.layout = QGridLayout(self)
         self.sendButten = QPushButton('发送')
         self.inputContent = QLineEdit()
         self.chatText = QTextEdit()
+        self.chatText.setReadOnly(True)
         self.sendButten.clicked.connect(self.sendToServer)
         self.layout.addWidget(self.chatText, 0, 0, 5, 5)
         self.layout.addWidget(self.inputContent, 5, 0, 1, 4)
         self.layout.addWidget(self.sendButten, 5, 4)
         self.resize(400, 500)
         self.setWindowTitle('chatRoom')
+
+
+# class cryptoMessage():
+#     def savekey(self):
+#         (self.pub_key,self.priv_key) = rsa.newkeys(1024)
+#         rsa.PrivateKey.save_pkcs1
+#         rsa.PublicKey.save_pkcs1
+    
+#     # def sendCheckToServer(self):
+#         sendCheckToserver = self.SockData.send(self.pub_key)
+#     # def recvCheckFromServer(self):
+#         recvCheckFromServer = self.SockData.recv(1024).decode()
+
+        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
