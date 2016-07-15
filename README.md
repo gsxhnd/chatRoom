@@ -1,6 +1,6 @@
 # chatRoom
-###平台:</br>
- python3.4,pyqt5
+##平台:</br>
+ python3.4,pyqt5</br>
 server 服务端：
  
 client 客户端:</br>
