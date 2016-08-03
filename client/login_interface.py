@@ -25,11 +25,11 @@ class loginDialog(QWidget):
             port = getdata[1]
             account = getdata[2]
             password = getdata[3]
-        # else:
-        #     ip = ''
-        #     port = ''
-        #     account = ''
-        #     password = ''
+        else:
+            ip = ''
+            port = ''
+            account = ''
+            password = ''
 
 
 
@@ -37,33 +37,41 @@ class loginDialog(QWidget):
         登录界面的设计
         """
         IpLbl = QLabel('IP：')
-        self.IpEdit = QLineEdit('')
-        self.IpEdit.setPlaceholderText('输入IP地址')
+        IpEdit = QLineEdit(ip)
+        IpEdit.setPlaceholderText('输入IP地址')
         
         PortLbl = QLabel('PORT：')
-        self.PortEdit = QLineEdit('')
-        self.PortEdit.setPlaceholderText('输入端口')
+        PortEdit = QLineEdit(port)
+        PortEdit.setPlaceholderText('输入端口')
 
         AccountLbl = QLabel('账户：')
-        self.AccountEdit = QLineEdit('')
-        self.AccountEdit.setPlaceholderText('输入账户')
+        AccountEdit = QLineEdit(account)
+        AccountEdit.setPlaceholderText('输入账户')
 
         PasswordLbl = QLabel('密码：')
-        self.PasswordEdit = QLineEdit('')
-        self.PasswordEdit.setEchoMode(QLineEdit.Password)
-        self.PasswordEdit.setPlaceholderText('输入密码')
+        PasswordEdit = QLineEdit(password)
+        PasswordEdit.setEchoMode(QLineEdit.Password)
+        PasswordEdit.setPlaceholderText('输入密码')
 
         # SecLbl = QLabel('加密方式')
         # SecCombo = QComboBox()
         # SecCombo.addItems(['没有实现', '没有实现', '没有实现'])
         #加密方式选择（未实现，先注释）
 
-
         """
         按钮动作
         """
+        self.IP = IpEdit.text()
+        self.PORT = PortEdit.text()
+        self.ACCOUNT = AccountEdit.text()
+        self.PASSWORD = PasswordEdit.text()
+
+        def configureOut():
+            configure = user_config.configOut(self.IP,self.PORT,self.ACCOUNT,self.PASSWORD)
+            configure = 
+
         connectButton = QPushButton('连接')
-        connectButton.clicked.connect(configout)
+        connectButton.clicked.connect(configureOut)
     
         quitButton = QPushButton('退出')
         quitButton.clicked.connect(qApp.quit)
@@ -75,13 +83,13 @@ class loginDialog(QWidget):
         ButtonLayout = QHBoxLayout()
             
         InfoLayout.addWidget(IpLbl, 0, 0)
-        InfoLayout.addWidget(self.IpEdit, 0, 1)
+        InfoLayout.addWidget(IpEdit, 0, 1)
         InfoLayout.addWidget(PortLbl, 1, 0)
-        InfoLayout.addWidget(self.PortEdit, 1, 1)
-        InfoLayout.addWidget(AccountName, 2, 0)
-        InfoLayout.addWidget(self.AccountEdit, 2, 1)
+        InfoLayout.addWidget(PortEdit, 1, 1)
+        InfoLayout.addWidget(AccountLbl, 2, 0)
+        InfoLayout.addWidget(AccountEdit, 2, 1)
         InfoLayout.addWidget(PasswordLbl,3,0)
-        InfoLayout.addWidget(self.Password,3,1)
+        InfoLayout.addWidget(PasswordEdit,3,1)
         # InfoLayout.addWidget(SecLbl, 4, 0)
         # InfoLayout.addWidget(SecCombo, 4, 1)
         #加密方式布局（未实现，先注释）
