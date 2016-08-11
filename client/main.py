@@ -10,7 +10,9 @@ from PyQt5 import QtCore as core
 """
 1.使用 账户/密码 登录方式未实现。
 2.加密方式未实现。
-3.账户和昵称一样。
+3.账户和昵称一样，需要修改。
+4.密码的加密（重要）未实现。
+5.系统托盘未实现。
 """
 
 dateNow = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -134,8 +136,6 @@ class showConfig():
             getConfigData = eval(readInfoData)
             return (getConfigData['IP'],getConfigData['PORT'],getConfigData['NICKNAME'])
 
-class ErrorMessage():
-    Errormeaage
 
 
 class ChatRoom(QDialog):

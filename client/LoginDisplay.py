@@ -1,10 +1,11 @@
 import sys
 import os
-import user_config
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore as core
 
+import user_config
+import ChatDisplay
 
 
 
@@ -66,13 +67,12 @@ class loginDialog(QWidget):
         self.ACCOUNT = AccountEdit.text()
         self.PASSWORD = PasswordEdit.text()
 
-        def configureOut():
-            configure = user_config.configOut(self.IP,self.PORT,self.ACCOUNT,self.PASSWORD)
-            configure = 
+        
 
         connectButton = QPushButton('连接')
-        connectButton.clicked.connect(configureOut)
-    
+        connectButton.clicked.connect(self.configure)
+        #写入配置
+        connectButton.clicked.connect(self.showChatDisplay)
         quitButton = QPushButton('退出')
         quitButton.clicked.connect(qApp.quit)
 
@@ -114,6 +114,21 @@ class loginDialog(QWidget):
         showFrame.moveCenter(centerPoint)
         self.move(showFrame.topLeft())
 
+    def showChatDisplay(self):
+        """
+        关闭登录界面并打开聊天窗口
+        """
+        self.close()
+        showchatdisplay = ChatDisplay.ChatDisplay()
+        showchatdisplay.show()
+        showchatdisplay.exec_()
+
+    def configure(self):
+        """
+        将信息写入配置文件
+        """
+        configout = user_config.configOut
+        configout(self.IP,self.PORT,self.ACCOUNT,self.PASSWORD)
 
         
 if __name__ == '__main__':
