@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore as core
 import sys
 
-class ChatDisplay(QDialog):
+class ChatDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.showchatRoom()

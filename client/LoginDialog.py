@@ -5,7 +5,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5 import QtCore as core
 
 import user_config
-import ChatDisplay
+import ChatDialog
+import communicate
 
 
 
@@ -38,21 +39,21 @@ class loginDialog(QWidget):
         登录界面的设计
         """
         IpLbl = QLabel('IP：')
-        IpEdit = QLineEdit(ip)
-        IpEdit.setPlaceholderText('输入IP地址')
+        self.IpEdit = QLineEdit(ip)
+        self.IpEdit.setPlaceholderText('输入IP地址')
         
         PortLbl = QLabel('PORT：')
-        PortEdit = QLineEdit(port)
-        PortEdit.setPlaceholderText('输入端口')
+        self.Portedit = QLineEdit(port)
+        self.Portedit.setPlaceholderText('输入端口')
 
         AccountLbl = QLabel('账户：')
-        AccountEdit = QLineEdit(account)
-        AccountEdit.setPlaceholderText('输入账户')
+        self.AccountEdit = QLineEdit(account)
+        self.AccountEdit.setPlaceholderText('输入账户')
 
         PasswordLbl = QLabel('密码：')
-        PasswordEdit = QLineEdit(password)
-        PasswordEdit.setEchoMode(QLineEdit.Password)
-        PasswordEdit.setPlaceholderText('输入密码')
+        self.PasswordEdit = QLineEdit(password)
+        self.PasswordEdit.setEchoMode(QLineEdit.Password)
+        self.PasswordEdit.setPlaceholderText('输入密码')
 
         # SecLbl = QLabel('加密方式')
         # SecCombo = QComboBox()
@@ -62,17 +63,15 @@ class loginDialog(QWidget):
         """
         按钮动作
         """
-        self.IP = IpEdit.text()
-        self.PORT = PortEdit.text()
-        self.ACCOUNT = AccountEdit.text()
-        self.PASSWORD = PasswordEdit.text()
+        
 
         
 
         connectButton = QPushButton('连接')
         connectButton.clicked.connect(self.configure)
         #写入配置
-        connectButton.clicked.connect(self.showChatDisplay)
+        # connectButton.clicked.connect(self.showChatDisplay)
+        connectButton.clicked.connect(self.checkLogin)
         quitButton = QPushButton('退出')
         quitButton.clicked.connect(qApp.quit)
 
@@ -83,13 +82,13 @@ class loginDialog(QWidget):
         ButtonLayout = QHBoxLayout()
             
         InfoLayout.addWidget(IpLbl, 0, 0)
-        InfoLayout.addWidget(IpEdit, 0, 1)
+        InfoLayout.addWidget(self.IpEdit, 0, 1)
         InfoLayout.addWidget(PortLbl, 1, 0)
-        InfoLayout.addWidget(PortEdit, 1, 1)
+        InfoLayout.addWidget(self.Portedit, 1, 1)
         InfoLayout.addWidget(AccountLbl, 2, 0)
-        InfoLayout.addWidget(AccountEdit, 2, 1)
+        InfoLayout.addWidget(self.AccountEdit, 2, 1)
         InfoLayout.addWidget(PasswordLbl,3,0)
-        InfoLayout.addWidget(PasswordEdit,3,1)
+        InfoLayout.addWidget(self.PasswordEdit,3,1)
         # InfoLayout.addWidget(SecLbl, 4, 0)
         # InfoLayout.addWidget(SecCombo, 4, 1)
         #加密方式布局（未实现，先注释）
@@ -114,21 +113,30 @@ class loginDialog(QWidget):
         showFrame.moveCenter(centerPoint)
         self.move(showFrame.topLeft())
 
-    def showChatDisplay(self):
+    def showChatDialog(self):
         """
         关闭登录界面并打开聊天窗口
         """
         self.close()
-        showchatdisplay = ChatDisplay.ChatDisplay()
-        showchatdisplay.show()
-        showchatdisplay.exec_()
+        showchatdialog = ChatDialog.ChatDialog()
+        showchatdialog.show()
+        showchatdialog.exec_()
 
     def configure(self):
         """
         将信息写入配置文件
         """
-        configout = user_config.configOut
-        configout(self.IP,self.PORT,self.ACCOUNT,self.PASSWORD)
+        self.IP = self.IpEdit.text()
+        self.PORT = self.Portedit.text()
+        self.ACCOUNT = self.AccountEdit.text()
+        self.PASSWORD = self.PasswordEdit.text()
+        configout = user_config.configOut(self.IP,self.PORT,self.ACCOUNT,self.PASSWORD)
+        
+
+    def checkLogin(self):
+        port = int(self.PORT)
+        connectToserver = communicate.Sockconnect(self.IP,port)
+        checklogin = connectToserver.checkLogin(self.ACCOUNT,self.PASSWORD)
 
         
 if __name__ == '__main__':
