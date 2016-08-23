@@ -136,7 +136,8 @@ class loginDialog(QWidget):
     def checkLogin(self):
         port = int(self.PORT)
         connectToserver = communicate.Sockconnect(self.IP,port)
-        checklogin = connectToserver.checkLogin(self.ACCOUNT,self.PASSWORD)
+        data = {'username':self.ACCOUNT,'password':self.PASSWORD}
+        checklogin = connectToserver.checkLogin(str(data).encode())
 
         
 if __name__ == '__main__':
