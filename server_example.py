@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import socket
 import threading
-import rsa
  
 con = threading.Condition()
 HOST = input("input the server's ip adrress: ")  # Symbolic name meaning all available interfaces
