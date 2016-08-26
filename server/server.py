@@ -24,10 +24,10 @@ while 1:
     print(data)
     checkdata = eval(data)
     username = checkdata['username']
-    print(username)
-    info = conn_getuserpasswd(username)
-    print(info)
-    if info == checkdata['password'] :
+    print(username) 
+    checkPasswd = conn_getuserpasswd(username)
+    print(checkPasswd)
+    if checkPasswd == checkdata['password'] :
         # conn.send('pass')
         print('pass')
     else:
