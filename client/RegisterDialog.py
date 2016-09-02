@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import *
+import connToDatabase
 import sys
 
 class RegisterDialog(QDialog):
@@ -11,6 +12,7 @@ class RegisterDialog(QDialog):
         ButtonLayout = QHBoxLayout()
 
         self.RegisterButten = QPushButton('注册')
+        self.RegisterButten.clicked.connect(self.RegisterToDatabase)
         
         self.QuitButton  = QPushButton('退出')
         self.QuitButton.clicked.connect(qApp.quit)
@@ -52,6 +54,13 @@ class RegisterDialog(QDialog):
         
         self.resize(350, 200)
         self.setWindowTitle('Register')
+
+    def RegisterToDatabase(self):
+        self.ACCOUNT = self.AccountEdit.text()
+        self.PASSWD = self.PasswdEdit.text()
+        self.MAIL = self.MailEdit.text()
+        conn = connToDatabase.connToDatabase('192.168.84.140','chatroot','000000','chat')
+        conn.RegisterNewAccount(self.ACCOUNT,self.PASSWD,self.MAIL)
   
 
 if __name__ == '__main__':

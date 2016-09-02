@@ -1,5 +1,5 @@
 import socket
-import connToserver
+import connToDatabase
 
 # HOST = input("input the server's ip address: ")
 # port = input("input the server's port: ")
@@ -13,7 +13,7 @@ print('Socket created')
 s.bind((HOST,PORT))
 s.listen(10)
 print('Socket now listening')
-conn_database = connToserver.connToserver('192.168.84.140','chatroot','000000','chat')
+conn_database = connToDatabase.connToDatabase('192.168.84.140','chatroot','000000','chat')
 conn_getuserpasswd = conn_database.getUserpasswd
 
 while 1:
