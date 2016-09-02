@@ -24,13 +24,11 @@ while 1:
     print(data)
     checkdata = eval(data)
     username = checkdata['username']
-    print(username) 
     checkPasswd = conn_getuserpasswd(username)
-    print(checkPasswd)
     if checkPasswd == checkdata['password'] :
-        # conn.send('pass')
-        print('pass')
+        pass_login = 'pass'
+        conn.send(pass_login.encode())
     else:
         count = count + 1
-        # conn.send('faild')
-        print('faild')
+        pass_faild  = 'faild'
+        conn.send(pass_faild.encode())

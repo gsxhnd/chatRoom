@@ -7,6 +7,7 @@ from PyQt5 import QtCore as core
 import user_config
 import ChatDialog
 import communicate
+import RegisterDialog
 
 
 
@@ -49,6 +50,7 @@ class loginDialog(QWidget):
         AccountLbl = QLabel('账户：')
         self.AccountEdit = QLineEdit(account)
         self.AccountEdit.setPlaceholderText('输入账户')
+        
 
         PasswordLbl = QLabel('密码：')
         self.PasswordEdit = QLineEdit(password)
@@ -67,11 +69,13 @@ class loginDialog(QWidget):
 
         
 
-        connectButton = QPushButton('连接')
+        connectButton = QPushButton('登录')
         connectButton.clicked.connect(self.configure)
         #写入配置
         # connectButton.clicked.connect(self.showChatDisplay)
         connectButton.clicked.connect(self.checkLogin)
+        registerButton = QPushButton('注册')
+        registerButton.clicked.connect(self.showRegister)
         quitButton = QPushButton('退出')
         quitButton.clicked.connect(qApp.quit)
 
@@ -93,6 +97,7 @@ class loginDialog(QWidget):
         # InfoLayout.addWidget(SecCombo, 4, 1)
         #加密方式布局（未实现，先注释）
         ButtonLayout.addWidget(connectButton)
+        ButtonLayout.addWidget(registerButton)
         ButtonLayout.addWidget(quitButton)
 
         mainLayout = QGridLayout(self)
@@ -122,6 +127,11 @@ class loginDialog(QWidget):
         showchatdialog.show()
         showchatdialog.exec_()
 
+    def showRegister(self):
+        showregister = RegisterDialog.RegisterDialog()
+        showregister.show()
+        showregister.exec_()
+
     def configure(self):
         """
         将信息写入配置文件
@@ -138,7 +148,13 @@ class loginDialog(QWidget):
         connectToserver = communicate.Sockconnect(self.IP,port)
         data = {'username':self.ACCOUNT,'password':self.PASSWORD}
         checklogin = connectToserver.checkLogin(str(data).encode())
-
+        checkdata = connectToserver.recvFromserver()
+        if checkdata == 'pass':
+            self.close()
+            self.showChatDialog()
+        elif checkdata == 'faild':
+            loginFaild_message = QMessageBox.information(self,'error','account or password error')
+            
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
