@@ -15,7 +15,7 @@ class RegisterDialog(QDialog):
         self.RegisterButten.clicked.connect(self.RegisterToDatabase)
         
         self.QuitButton  = QPushButton('退出')
-        self.QuitButton.clicked.connect(qApp.quit)
+        self.QuitButton.clicked.connect(self.close)
 
         self.AccountLbl  = QLabel('账户：')
         self.AccountEdit = QLineEdit()
@@ -24,10 +24,12 @@ class RegisterDialog(QDialog):
         self.PasswdLbl = QLabel('密码：')
         self.PasswdEdit = QLineEdit()
         self.PasswdEdit.setPlaceholderText('123')
+        self.PasswdEdit.setEchoMode(QLineEdit.Password)
 
-        self.rePasswdLbl = QLabel('re密码：')
+        self.rePasswdLbl = QLabel('重新密码：')
         self.rePasswdEdit = QLineEdit()
         self.rePasswdEdit.setPlaceholderText('123')
+        self.rePasswdEdit.setEchoMode(QLineEdit.Password)
 
         self.MailLbl  = QLabel('邮箱：')
         self.MailEdit = QLineEdit()
@@ -58,9 +60,16 @@ class RegisterDialog(QDialog):
     def RegisterToDatabase(self):
         self.ACCOUNT = self.AccountEdit.text()
         self.PASSWD = self.PasswdEdit.text()
+        self.rePASSWD = self.rePasswdEdit.text()
         self.MAIL = self.MailEdit.text()
-        conn = connToDatabase.connToDatabase('192.168.84.140','chatroot','000000','chat')
-        conn.RegisterNewAccount(self.ACCOUNT,self.PASSWD,self.MAIL)
+        if self.PASSWD == self.rePASSWD:
+            conn = connToDatabase.connToDatabase('115.28.84.53','chatroot','chat000000','chat')
+            conn.RegisterNewAccount(self.ACCOUNT,self.PASSWD,self.MAIL)
+        else:
+            passwdError_Message = QMessageBox.information(self,'error','password error')
+
+    def ErrorMessage(self):
+        pass
   
 
 if __name__ == '__main__':

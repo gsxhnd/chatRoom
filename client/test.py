@@ -17,12 +17,43 @@ import pymysql
 # p = people('tom',10,30) 
 # p.speak() 
 
-def conn_databaes(acccount):
-    conn = pymysql.connect(host = '192.168.84.140' ,user = 'chatroot' ,passwd = '000000' ,db = 'chat' ,charset = 'utf8')
-    cur = conn.cursor()
-    cur.execute("select * from user_passwd where username = '%s' " %acccount)
-    for each in cur:
-        return each[2]
+# def conn_databaes(acccount):
+#     conn = pymysql.connect(host = '192.168.84.140' ,user = 'chatroot' ,passwd = '000000' ,db = 'chat' ,charset = 'utf8')
+#     cur = conn.cursor()
+#     cur.execute("select * from user_passwd where username = '%s' " %acccount)
+#     for each in cur:
+#         return each[2]
 
-info = conn_databaes('admin')
-print(info)
+# info = conn_databaes('admin')
+# print(info)
+
+
+# def mymap(*seqs,pad=None):
+#     seqs = [list(S) for S in seqs]
+#     print(seqs)
+#     res = []
+#     while any(seqs):
+#         res.append(tuple((S.pop(0) if S else pad) for S in seqs))
+#         return res
+# s1,s2 = 'abc','xyz123'
+# print(s1)
+# print(s2)
+# print(mymap(s1,s2))
+
+
+
+def bubble(bubbleList):
+    listLength = len(bubbleList)
+    while listLength > 0:
+        print (listLength)
+        for i in range(listLength - 1):
+            if bubbleList[i] > bubbleList[i+1]:
+                bubbleList[i] = bubbleList[i] + bubbleList[i+1]
+                bubbleList[i+1] = bubbleList[i] - bubbleList[i+1]
+                bubbleList[i] = bubbleList[i] - bubbleList[i+1]
+        listLength -= 1
+    print(bubbleList)
+ 
+if __name__ == '__main__':
+    bubbleList = [3, 4, 1, 2, 5, 8, 0]
+    bubble(bubbleList)
