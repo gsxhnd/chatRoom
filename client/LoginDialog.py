@@ -72,7 +72,7 @@ class loginDialog(QWidget):
         connectButton = QPushButton('登录')
         connectButton.clicked.connect(self.configure)
         #写入配置
-        # connectButton.clicked.connect(self.showChatDisplay)
+        # connectButton.clicked.connect(self.showChatDialog)
         connectButton.clicked.connect(self.checkLogin)
         registerButton = QPushButton('注册')
         registerButton.clicked.connect(self.showRegister)
@@ -128,9 +128,9 @@ class loginDialog(QWidget):
         showchatdialog.exec_()
 
     def showRegister(self):
-        showregister = RegisterDialog.RegisterDialog()
-        showregister.show()
-        showregister.exec_()
+        showRegister = RegisterDialog.RegisterDialog()
+        showRegister.show()
+        showRegister.exec_()
 
     def configure(self):
         """
@@ -145,15 +145,20 @@ class loginDialog(QWidget):
 
     def checkLogin(self):
         port = int(self.PORT)
-        connectToserver = communicate.Sockconnect(self.IP,port)
-        data = {'username':self.ACCOUNT,'password':self.PASSWORD}
-        checklogin = connectToserver.checkLogin(str(data).encode())
-        checkdata = connectToserver.recvFromserver()
-        if checkdata == 'pass':
-            self.close()
-            self.showChatDialog()
-        elif checkdata == 'faild':
-            loginFaild_message = QMessageBox.information(self,'error','account or password error')
+        try:
+            connectToserver = communicate.Sockconnect(self.IP,port)
+            data = {'username':self.ACCOUNT,'password':self.PASSWORD}
+            checklogin = connectToserver.checkLogin(str(data).encode())
+            checkdata = connectToserver.recvFromserver()
+            if checkdata == 'pass':
+                self.close()
+                self.showChatDialog()
+            elif checkdata == 'faild':
+                loginFaild_message = QMessageBox.information(self,'error','account or password error')
+        except Exception as e:
+            loginError_message = QMessageBox.information(self,'1','1')
+
+
             
         
 if __name__ == '__main__':

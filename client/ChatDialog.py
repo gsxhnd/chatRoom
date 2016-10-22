@@ -24,6 +24,6 @@ class ChatDialog(QDialog):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = ChatDisplay()
+    ex = ChatDialog()
     ex.show()
     sys.exit(app.exec_())
