@@ -18,7 +18,7 @@ class connToDatabase():
         """
         dad
         """
-        sql_content = "insert into user_passwd (username,password,mail) values('%s','%s','%s')" %(ACCOUNT,PASSWD,MAIL)
+        sql_content = "insert into users (userid,passwd,name) values('%s','%s','%s')" %(ACCOUNT,PASSWD,MAIL)
         self.cur.execute(sql_content)
         self.conn.commit()
         self.cur.close()

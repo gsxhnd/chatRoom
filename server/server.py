@@ -1,20 +1,29 @@
 import socket
-import connToDatabase
+import connDatabase
+import getConf
 
 # HOST = input("input the server's ip address: ")
 # port = input("input the server's port: ")
 # PORT = int(port)
+serverName = "server.conf"
+ServerConfiguration = getConf.getConf(serverName)
+HOST = ServerConfiguration.getValue("Default","HOST")
+PORT = ServerConfiguration.getValue("Default","PORT")
 
-HOST = '127.0.0.1'
-PORT = 8888
+DBHost = ServerConfiguration.getValue("DataBase","DBHost")
+DBName = ServerConfiguration.getValue("DataBase","DBName")
+DBUser = ServerConfiguration.getValue("DataBase","DBUser")
+DBPasswd = ServerConfiguration.getValue("DataBase","DBPasswd")
+
+
 
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 print('Socket created')
-s.bind((HOST,PORT))
+s.bind((HOST,int(PORT)))
 s.listen(10)
 print('Socket now listening')
-conn_database = connToDatabase.connToDatabase('192.168.84.140','chatroot','000000','chat')
-conn_getuserpasswd = conn_database.getUserpasswd
+connDatabase = connDatabase.connDatabase(DBHost,DBName,DBUser,DBPasswd)
+conn_getuserpasswd = connDatabase.getUserpasswd
 
 while 1:
     count = 0
